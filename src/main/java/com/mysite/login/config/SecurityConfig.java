@@ -32,7 +32,7 @@ public class SecurityConfig {
         http
                 .csrf((csrf) -> csrf.disable()) // 개발 단계에서 임시로 비활성화, 운영 시에는 활성화 고려
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers(antMatcher("/api/signup")).permitAll()
+                        .requestMatchers(antMatcher("/signup"), antMatcher("/login"), antMatcher(("/"))).permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin((formLogin) -> formLogin
@@ -41,6 +41,7 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 .logout((logout) -> logout
+                        .logoutSuccessUrl("/login")
                         .permitAll()
                 );
         return http.build();

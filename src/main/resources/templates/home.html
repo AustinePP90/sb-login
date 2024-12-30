@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>홈</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #e0f7fa; /* 밝은 청록색 배경 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .home-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+        }
+
+        .home-container h2 {
+            color: #008080; /* 청록색 */
+            margin-bottom: 20px;
+        }
+
+        .home-container p {
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .home-container button {
+            background-color: #008080; /* 청록색 */
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .home-container button:hover {
+            background-color: #006666; /* 조금 더 어두운 청록색 */
+        }
+    </style>
+</head>
+<body>
+<div class="home-container">
+    <h2>홈 페이지</h2>
+    <div sec:authorize="!isAuthenticated()">
+        <a th:href="@{/login}">로그인</a>
+        <a th:href="@{/signup}">회원가입</a>
+    </div>
+    <div sec:authorize="isAuthenticated()">
+        <p>로그인에 성공했습니다!</p>
+        <form th:action="@{/logout}" method="get">
+            <button type="submit">로그아웃</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>
