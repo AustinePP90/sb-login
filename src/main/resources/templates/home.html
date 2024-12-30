@@ -56,7 +56,7 @@
     </div>
     <div sec:authorize="isAuthenticated()">
         <p>로그인에 성공했습니다!</p>
-        <form th:action="@{/logout}" method="get">
+        <form th:action="@{/logout}" method="post">
             <button type="submit">로그아웃</button>
         </form>
     </div>

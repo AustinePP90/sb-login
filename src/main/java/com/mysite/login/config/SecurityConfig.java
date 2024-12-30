@@ -42,6 +42,8 @@ public class SecurityConfig {
                 )
                 .logout((logout) -> logout
                         .logoutSuccessUrl("/login")
+//                        .invalidateHttpSession(true) // 로그아웃 시 HTTP 세션 무효화
+//                        .deleteCookies("JSESSIONID") // 로그아웃 시 쿠키 삭제 (선택 사항)
                         .permitAll()
                 );
         return http.build();
