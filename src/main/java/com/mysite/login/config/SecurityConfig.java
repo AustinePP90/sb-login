@@ -21,9 +21,12 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 public class SecurityConfig {
 
     private final UserService userService;
+    private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 
-    public SecurityConfig(@Lazy UserService userService) {
+    public SecurityConfig(@Lazy UserService userService,
+                          CustomAuthenticationFailureHandler customAuthenticationFailureHandler) {
         this.userService = userService;
+        this.customAuthenticationFailureHandler = customAuthenticationFailureHandler;
     }
 
     // HTTP 요청에 대한 보안 설정을 함
@@ -38,12 +41,13 @@ public class SecurityConfig {
                 .formLogin((formLogin) -> formLogin
                         .loginPage("/login")
                         .defaultSuccessUrl("/")
+                        .failureHandler(customAuthenticationFailureHandler)
                         .permitAll()
                 )
                 .logout((logout) -> logout
                         .logoutSuccessUrl("/login")
-//                        .invalidateHttpSession(true) // 로그아웃 시 HTTP 세션 무효화
-//                        .deleteCookies("JSESSIONID") // 로그아웃 시 쿠키 삭제 (선택 사항)
+                        .invalidateHttpSession(true) // 로그아웃 시 HTTP 세션 무효화
+                        .deleteCookies("JSESSIONID") // 로그아웃 시 쿠키 삭제 (선택 사항)
                         .permitAll()
                 );
         return http.build();

@@ -29,16 +29,16 @@ public class User implements UserDetails { // UserDetails 인터페이스를 구
 
     private String password;
 
-    @Builder
-    public User(String email, String password, String auth) {
-        this.email = email;
-        this.password = password;
-    }
-
     @ElementCollection(fetch = FetchType.EAGER) // roles 컬렉션을 별도의 테이블로 관리하고 즉시 로딩
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id")) // 외래 키 컬럼 이름 명시
     @Builder.Default
     private Set<String> roles = Set.of("ROLE_USER");
+
+    @Builder
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

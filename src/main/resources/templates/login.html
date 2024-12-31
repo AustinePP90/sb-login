@@ -72,11 +72,27 @@
         .signup-link:hover {
             text-decoration: underline;
         }
+
+        .error-message {
+            font-size: 15px;
+            color: red;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .success-message {
+            font-size: 15px;
+            color: green;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
 <div class="login-container">
     <h2>로그인</h2>
+    <div th:if="${session.errorMessage}" class="error-message" th:text="${session.errorMessage}"></div>
+    <div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>
     <form th:action="@{/login}" method="post">
         <div class="form-group">
             <label for="email">이메일:</label>
