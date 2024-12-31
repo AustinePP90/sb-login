@@ -3,8 +3,7 @@ package com.mysite.login.config;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -12,16 +11,15 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+@Slf4j
 @Component
 public class CustomAuthenticationFailureHandler implements AuthenticationFailureHandler {
-
-    private static final Logger logger = LoggerFactory.getLogger(CustomAuthenticationFailureHandler.class);
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request,
                                         HttpServletResponse response,
                                         AuthenticationException exception) throws IOException, ServletException {
-        logger.info("Authentication failed with exception: {}", exception.getClass().getName());
+        log.info("Authentication failed with exception: {}", exception.getClass().getName());
 
         String errorMessage;
         if (exception instanceof BadCredentialsException) {
@@ -35,7 +33,7 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
         }
 
         request.getSession().setAttribute("errorMessage", errorMessage);
-        logger.info("Error message set in session: {}", errorMessage);
+        log.info("로그인 실패: {}", errorMessage);
         response.sendRedirect("/login?error");
     }
 }

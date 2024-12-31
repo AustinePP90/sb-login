@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
@@ -22,11 +23,17 @@ public class SecurityConfig {
 
     private final UserService userService;
     private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
+    private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
+    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
     public SecurityConfig(@Lazy UserService userService,
-                          CustomAuthenticationFailureHandler customAuthenticationFailureHandler) {
+                          CustomAuthenticationFailureHandler customAuthenticationFailureHandler,
+                          CustomLogoutSuccessHandler customLogoutSuccessHandler,
+                          CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) {
         this.userService = userService;
         this.customAuthenticationFailureHandler = customAuthenticationFailureHandler;
+        this.customLogoutSuccessHandler = customLogoutSuccessHandler;
+        this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
     }
 
     // HTTP 요청에 대한 보안 설정을 함
@@ -42,10 +49,12 @@ public class SecurityConfig {
                         .loginPage("/login")
                         .defaultSuccessUrl("/")
                         .failureHandler(customAuthenticationFailureHandler)
+                        .successHandler(customAuthenticationSuccessHandler) // 로그인 성공 핸들러 등록
                         .permitAll()
                 )
                 .logout((logout) -> logout
                         .logoutSuccessUrl("/login")
+                        .logoutSuccessHandler(customLogoutSuccessHandler) // 로그아웃 성공 핸들러 등록
                         .invalidateHttpSession(true) // 로그아웃 시 HTTP 세션 무효화
                         .deleteCookies("JSESSIONID") // 로그아웃 시 쿠키 삭제 (선택 사항)
                         .permitAll()
@@ -72,5 +81,11 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
+    }
+
+    // @Valid 어노테이션 활성화를 위한 Bean 등록
+    @Bean
+    public MethodValidationPostProcessor methodValidationPostProcessor() {
+        return new MethodValidationPostProcessor();
     }
 }
